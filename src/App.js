@@ -6,6 +6,9 @@ import * as fcl from "@onflow/fcl";
 import * as types from "@onflow/types";
 import { mintNFT } from "./cadence/transactions/mintNFT_tx";
 import { getTotalSupply } from "./cadence/scripts/getTotalSupply_script";
+import { getMetadata } from "./cadence/scripts/getMetadata_script";
+import { getIDs } from "./cadence/scripts/getID_script";
+
 
 
 const TWITTER_HANDLE = "_buildspace";
@@ -25,21 +28,131 @@ fcl.config({
 
 function App() {
   const [ user, setUser ] = useState();
-
+  const [ images, setImages ] = useState([])
 
   const logIn = () => {
     fcl.authenticate();
 };
 
 const logOut = () => {
+  setImages([]);
     fcl.unauthenticate();
 };
 
-useEffect(() => {
-  // This listens to changes in the user objects
-  // and updates the connected user
-  fcl.currentUser().subscribe(setUser);
-}, [])
+
+
+
+
+
+
+
+const RenderLogin = () => {
+  return (
+    <div>
+      <button className="cta-button button-glow" onClick={() => logIn()}>
+        Log In
+      </button>
+    </div>
+  );
+};
+
+
+
+
+
+
+const RenderMintButton = () => {
+  return (
+    <div>
+      <div className="button-container">
+        <button className="cta-button button-glow" onClick={() => mint()}>
+          Mint
+        </button>
+      </div>
+      {images.length > 0 ? 
+        <>
+          <h2>Your NFTs</h2>
+            <div className="image-container">
+              {images}
+            </ div>
+        </> 
+      : ""}
+  </div>
+  );
+}
+
+
+
+const RenderLogout = () => {
+  if (user && user.addr) {
+    return (
+      <div className="logout-container">
+        <button className="cta-button logout-btn" onClick={() => logOut()}>
+          ❎ {"  "}
+          {user.addr.substring(0, 6)}...{user.addr.substring(user.addr.length - 4)}
+        </button>
+      </div>
+    );
+  }
+  return undefined;
+};
+
+
+
+
+const fetchNFTs = async () => {
+  // Empty the images array
+  setImages([]);
+  let IDs = [];
+  
+  // Fetch the IDs with our script (no fees or signers necessary)
+  try {
+    IDs = await fcl.query({
+      cadence: `${getIDs}`,
+      args: (arg, t) => [
+        arg(user.addr, types.Address), 
+      ],
+    })
+  } catch(err) {
+    console.log("No NFTs Owned")
+  }
+  
+  let _imageSrc = []
+  try{
+    for(let i=0; i<IDs.length; i++) {
+      const result = await fcl.query({
+        cadence: `${getMetadata}`,
+        args: (arg, t) => [
+          arg(user.addr, types.Address), 
+          arg(IDs[i].toString(), types.UInt64),
+        ],
+      })
+      // If the source is an IPFS link, remove the "ipfs://" prefix
+      if (result["thumbnail"].startsWith("ipfs://")) {
+        _imageSrc.push(result["thumbnail"].substring(7))
+        // Add a gateway prefix
+        _imageSrc[i] = "https://nftstorage.link/ipfs/" + _imageSrc[i]
+      }
+      else {
+        _imageSrc.push(result["thumbnail"])
+      }
+    }
+  } catch(err) {
+    console.log(err)
+  }
+  
+  if(images.length < _imageSrc.length) {
+    setImages((Array.from({length: _imageSrc.length}, (_, i) => i).map((number, index)=>
+      <img style={{margin:"10px", height: "150px"}} src={_imageSrc[index]} key={number} alt={"NFT #"+number}
+      />
+    )))
+  }
+}
+
+
+
+
+
 
 
 const mint = async() => {
@@ -77,42 +190,26 @@ const mint = async() => {
   }
 }
 
-const RenderMintButton = () => {
-  return (
-    <div>
-      <button className="cta-button button-glow" onClick={() => mint()}>
-        Mint
-      </button>
-    </div>
-  );
-}
 
 
 
 
-const RenderLogin = () => {
-  return (
-    <div>
-      <button className="cta-button button-glow" onClick={() => logIn()}>
-        Log In
-      </button>
-    </div>
-  );
-};
 
-const RenderLogout = () => {
+useEffect(() => {
+  // This listens to changes in the user objects
+  // and updates the connected user
+  fcl.currentUser().subscribe(setUser);
+}, [])
+
+
+
+useEffect(() => {
   if (user && user.addr) {
-    return (
-      <div className="logout-container">
-        <button className="cta-button logout-btn" onClick={() => logOut()}>
-          ❎ {"  "}
-          {user.addr.substring(0, 6)}...{user.addr.substring(user.addr.length - 4)}
-        </button>
-      </div>
-    );
+    fetchNFTs();
   }
-  return undefined;
-};
+}
+, [user]);
+
 
 
   return (
