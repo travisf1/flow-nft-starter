@@ -1,4 +1,5 @@
 //importing required libraries
+
 import React, { useState, useEffect } from "react";
 import './App.css';
 import twitterLogo from "./assets/twitter-logo.svg";
@@ -18,7 +19,7 @@ const TWITTER_LINK = `https://twitter.com/${TWITTER_HANDLE}`;
 
 fcl.config({
   "flow.network": "testnet",
-  "app.detail.title": "travisf1buildspaceproject", // Change the title!
+  "app.detail.title": "travisf1buildspaceprojectfinal", // Change the title!
   "accessNode.api": "https://rest-testnet.onflow.org",
   "app.detail.icon": "https://placekitten.com/g/200/200",
   "discovery.wallet": "https://fcl-discovery.onflow.org/testnet/authn",
@@ -38,10 +39,6 @@ const logOut = () => {
   setImages([]);
     fcl.unauthenticate();
 };
-
-
-
-
 
 
 
@@ -146,6 +143,8 @@ const fetchNFTs = async () => {
       <img style={{margin:"10px", height: "150px"}} src={_imageSrc[index]} key={number} alt={"NFT #"+number}
       />
     )))
+
+    console.log(_imageSrc);
   }
 }
 
@@ -171,9 +170,9 @@ const mint = async() => {
       cadence: `${mintNFT}`,
       args: (arg, t) => [
         arg(user.addr, types.Address), //address to which the NFT should be minted
-        arg("myPic # "+_id.toString(), types.String), // Name
+        arg("myPic #"+_id.toString(), types.String), // Name
         arg("My pics on the blockchain", types.String), // Description
-        arg("ipfs://bafybeiabveveau65yngjysfqldx3qown355fmjfmjryddkatplmu3ecema/"+_id+".jpg", types.String),
+        arg("ipfs://bafybeiabveveau65yngjysfqldx3qown355fmjfmjryddkatplmu3ecema/img"+_id+".jpg", types.String),
       ],
       proposer: fcl.currentUser,
       payer: fcl.currentUser,
@@ -189,7 +188,6 @@ const mint = async() => {
     alert("Error minting NFT, please check the console for error details!")
   }
 }
-
 
 
 

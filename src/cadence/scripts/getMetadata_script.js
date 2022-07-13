@@ -1,5 +1,5 @@
 export const getMetadata = 
-
+`
 import MetadataViews from 0x631e88ae7f1d7c20;
 
 pub fun main(address: Address, id: UInt64): NFTResult {
@@ -7,7 +7,7 @@ pub fun main(address: Address, id: UInt64): NFTResult {
   let account = getAccount(address)
 
   let collection = account
-      .getCapability(/public/buildSpacemyPicsCollection) // Update the path here!
+      .getCapability(/public/buildSpacemyPicsfinalCollection) // Update the path here!
       .borrow<&{MetadataViews.ResolverCollection}>()
       ?? panic("Could not borrow a reference to the collection")
 
@@ -31,3 +31,22 @@ pub fun main(address: Address, id: UInt64): NFTResult {
 
   return data
 }
+pub struct NFTResult {
+  pub(set) var name: String
+  pub(set) var description: String
+  pub(set) var thumbnail: String
+  pub(set) var owner: Address
+  pub(set) var type: String
+
+  init() {
+    self.name = ""
+    self.description = ""
+    self.thumbnail = ""
+    self.owner = 0x0
+    self.type = ""
+  }
+}
+
+
+
+`
