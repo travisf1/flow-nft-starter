@@ -1,9 +1,9 @@
 export const mintNFT = 
 
 `
-// REPLACE THIS WITH YOUR CONTRACT NAME + ADDRESS
+
 import buildSpacemyPicsfinal from 0x29f4ad0f552505bb 
-// This remains the same 
+ 
 import NonFungibleToken from 0x631e88ae7f1d7c20
 import MetadataViews from 0x631e88ae7f1d7c20
 

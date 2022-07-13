@@ -5,7 +5,9 @@ import './App.css';
 import twitterLogo from "./assets/twitter-logo.svg";
 import * as fcl from "@onflow/fcl";
 import * as types from "@onflow/types";
-import { mintNFT } from "./cadence/transactions/mintNFT_tx";
+//old transaction- import { mintNFT } from "./cadence/transactions/mintNFT_tx";
+import { myMintNFT } from "./cadence/transactions/myMintNFT_tx";
+
 import { getTotalSupply } from "./cadence/scripts/getTotalSupply_script";
 import { getMetadata } from "./cadence/scripts/getMetadata_script";
 import { getIDs } from "./cadence/scripts/getID_script";
@@ -167,7 +169,7 @@ const mint = async() => {
   
   try {
     const transactionId = await fcl.mutate({
-      cadence: `${mintNFT}`,
+      cadence: `${myMintNFT}`, //changed mintNFT to myMintNFT
       args: (arg, t) => [
         arg(user.addr, types.Address), //address to which the NFT should be minted
         arg("myPic #"+_id.toString(), types.String), // Name
