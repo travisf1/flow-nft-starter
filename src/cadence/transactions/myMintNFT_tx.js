@@ -1,4 +1,4 @@
-
+export const mintNFT = 
 
 `
 // REPLACE THIS WITH YOUR CONTRACT NAME + ADDRESS
