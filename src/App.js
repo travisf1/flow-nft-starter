@@ -21,7 +21,7 @@ const TWITTER_LINK = `https://twitter.com/${TWITTER_HANDLE}`;
 
 fcl.config({
   "flow.network": "testnet",
-  "app.detail.title": "travisf1buildspaceprojectfinal", // Change the title!
+  "app.detail.title": "travisf1buildspaceprojectfinalproj", // Change the title!
   "accessNode.api": "https://rest-testnet.onflow.org",
   "app.detail.icon": "https://placekitten.com/g/200/200",
   "discovery.wallet": "https://fcl-discovery.onflow.org/testnet/authn",
